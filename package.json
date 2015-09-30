@@ -1,0 +1,30 @@
+{
+  "name": "gulp-cheerio-clean-svg",
+  "version": "0.0.0",
+  "description": "Preset to clean SVG with gulp-cheerio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hiswe/gulp-cheerio-clean-svg.git"
+  },
+  "keywords": [
+    "gulp-cheerio",
+    "gulpfriendly"
+  ],
+  "author": "Hiswe",
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/Hiswe/gulp-cheerio-clean-svg/issues"
+  },
+  "homepage": "https://github.com/Hiswe/gulp-cheerio-clean-svg",
+  "dependencies": {
+    "lodash": "^3.10.1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-cheerio": "^0.6.2"
+  }
+}

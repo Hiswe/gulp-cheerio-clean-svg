@@ -1,5 +1,7 @@
 'use strict';
 
+var _ = require('lodash');
+
 //
 // DICTIONNARY OF TAGS BY PURPOSE
 // http://www.w3.org/TR/SVG/propidx.html
@@ -49,25 +51,65 @@ var expandedAttributes = {
 // CLEANING FUNCTIONS
 //
 
+function removeComments($) {
+  $.root().each(rmComments);
+  function rmComments() {
+    this.children.forEach(function (child) {
+      if (child.type === 'text') return;
+      if (child.type === 'comment') return $(child).remove();
+      if (child.children) return $(child).each(rmComments);
+    });
+  }
+}
+
+function removeEmptyLines($) {
+  $.root().each(rmEmptyLines);
+  function rmEmptyLines() {
+    this.children.forEach(function (child) {
+      var next = child.next;
+      if (child.type === 'text' && next && next.type === 'text') {
+        return child.data = '';
+      };
+      if (child.children && child.type !== 'style') {
+        return $(child).each(rmEmptyLines);
+      }
+    });
+  }
+}
+
+// can't select tags with [sketch:type]
+function removeSketchType($) {
+  $('*')
+    .filter(function () {
+      return !_.isUndefined($(this).attr('sketch:type'));
+    })
+    .removeAttr('sketch:type');
+}
+
+function removeEmptyGroup($) {
+  $('g').each(function () {
+    if (!$(this).children().length) $(this).remove();
+  });
+}
+
+function removeEmptyDefs($) {
+  $('defs').each(function () {
+    if (!$(this).children().length) $(this).remove();
+  });
+}
+
 function removeTags($, tags) {
   tags.forEach(function (tag) {
     $(tag).remove();
   });
   return $;
-};
+}
 
 function removeAttributes($, attributes) {
   attributes.forEach(function (attribute) {
     $('[' + attribute + ']').removeAttr(attribute);
   });
   return $;
-};
-
-function removeEmptyGroup($) {
-  // only optim is to remove empty group
-  $s.find('g').each(function () {
-    if (!$(this).children().length) $(this).remove();
-  });
 }
 
 //
@@ -75,6 +117,11 @@ function removeEmptyGroup($) {
 //
 
 var defaultOptions = {
+  removeSketchType: true,
+  removeEmptyGroup: true,
+  removeEmptyDefs: true,
+  removeEmptyLines: true,
+  removeComments: true,
   tags: [
     'title',
     'desc',
@@ -88,29 +135,40 @@ var defaultOptions = {
   ],
 };
 
-// function expandAttributes(attributes) {
-//   if (!_.isArray(attributes) || !attributes.length) {
-//     return attributes;
-//   }
-//   var expanded = [];
+function expandAttributes(attributes) {
+  if (!_.isArray(attributes)) {
+    return defaultOptions.attributes;
+  }
+  var expanded = [];
 
-//   attributes.forEach(function (attribute) {
-//     if (_.has(presets.expandedAttributes, attribute)) {
-//       expanded = _.union(expanded, presets.expandedAttributes[attribute]);
-//     } else {
-//       expanded = _.union(expanded, [attribute]);
-//     }
-//   });
-//   return expanded;
+  attributes.forEach(function (attribute) {
+    if (_.has(expandedAttributes, attribute)) {
+      expanded = _.union(expanded, expandedAttributes[attribute]);
+    } else {
+      expanded = _.union(expanded, [attribute]);
+    }
+  });
+  return expanded;
 }
 
 module.exports = function clean(options) {
-  // if (_.isUndefined(options)) options = {};
-  // options = _.merge({}, defaultOptions, options);
+  if (_.isUndefined(options)) options = {};
+  options             = _.merge({}, defaultOptions, options);
+  options.attributes  = expandAttributes(options.attributes);
+  if (!_.isArray(options.tags)) options.tags = defaultOptions.tags;
+  options.attributes  = _.uniq(options.attributes);
+  options.tags        = _.uniq(options.tags);
 
   return {
     run: function ($, file, done) {
-
+      if (options.removeComments) removeComments($);
+      if (options.removeSketchType) removeSketchType($);
+      if (options.removeEmptyGroup) removeEmptyGroup($);
+      if (options.removeEmptyDefs) removeEmptyDefs($);
+      if (options.tags.length) removeTags($, options.tags);
+      if (options.attributes.length) removeAttributes($, options.attributes);
+      if (options.removeEmptyLines) removeEmptyLines($);
+      done();
     },
     parserOptions: {
       xmlMode: true
