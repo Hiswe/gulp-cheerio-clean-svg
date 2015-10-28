@@ -7,7 +7,7 @@ to use with [gulp cheerio](https://www.npmjs.com/package/gulp-cheerio).
 I don't feel to push it on npm so:
 
 ```
-npm install https://github.com/Hiswe/gulp-cheerio-clean-svg.git
+npm install git+https://github.com/Hiswe/gulp-cheerio-clean-svg --save-dev
 
 ```
 
