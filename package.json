@@ -4,7 +4,7 @@
   "description": "Preset to clean SVG with gulp-cheerio",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "gulp"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,11 @@
   },
   "homepage": "https://github.com/Hiswe/gulp-cheerio-clean-svg",
   "dependencies": {
-    "lodash": "^3.10.1"
+    "deepmerge": "^3.1.0",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
-    "gulp": "^3.9.0",
+    "gulp": "^4.0.0",
     "gulp-cheerio": "^0.6.2"
   }
 }
