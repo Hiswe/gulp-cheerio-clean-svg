@@ -21,8 +21,7 @@
   },
   "homepage": "https://github.com/Hiswe/gulp-cheerio-clean-svg",
   "dependencies": {
-    "deepmerge": "^3.1.0",
-    "lodash": "^4.17.11"
+    "deepmerge": "^3.1.0"
   },
   "devDependencies": {
     "gulp": "^4.0.0",
