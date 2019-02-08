@@ -138,6 +138,7 @@ function expandAttributes(attributes) {
 
 const mergeOptions = { arrayMerge: overwriteMerge }
 module.exports = function clean(options = {}) {
+  // https://www.npmjs.com/package/deepmerge#combine-array
   options = merge.all([{}, defaultOptions, options], mergeOptions)
   options.attributes = expandAttributes(options.attributes)
   if (!Array.isArray(options.tags)) options.tags = defaultOptions.tags
